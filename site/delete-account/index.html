@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Delete your Psalmwell account</title><meta name="description" content="Delete your Psalmwell account and all reflections, profile and blocked list."><link rel="icon" href="/icon.svg" type="image/svg+xml"><link rel="stylesheet" href="/styles.css"></head>
+<body><header><div class="wrap"><a class="brand" href="/">Psalmwell</a><nav><a href="/privacy">Privacy</a><a href="/community-rules">Community rules</a><a href="/child-safety">Child safety</a><a href="/support">Support</a></nav></div></header>
+<main class="wrap">
+<h1>Delete your Psalmwell account</h1>
+<div class="card"><p>This page deletes your <b>Psalmwell: Daily Bible Verse</b> account (by Hartmann Studios) and everything linked to it:</p>
+<ul><li>your sign-in account (email and password)</li><li>your display name and profile</li><li>every reflection you've posted</li><li>your blocked list</li></ul>
+<p>Reports you filed about others are kept for up to 1 year for safety reasons, with your account ID removed. Your journal and saved verses are stored only on your phone. Uninstall the app to remove them.</p>
+<p>You can also delete your account in the app: <b>Settings &gt; Delete account and my reflections</b>.</p></div>
+<div class="card"><h2>Sign in to confirm</h2>
+<form id="f" autocomplete="on"><label>Email<br><input id="email" type="email" required autocomplete="username"></label><br>
+<label>Password<br><input id="password" type="password" required autocomplete="current-password"></label><br>
+<label><input id="confirm" type="checkbox" style="width:auto"> I understand this permanently deletes my account and can't be undone.</label><br><br>
+<button class="btn danger" type="submit">Delete my account</button> <a href="#" id="reset" style="margin-left:12px">Forgot password?</a></form>
+<p id="msg" role="status"></p>
+<p class="muted">Signed up with Google, or can't sign in? Email <a href="mailto:me@charleshartmann.com?subject=Psalmwell%20account%20deletion">me@charleshartmann.com</a> from the address on your account. We'll delete your account and data within 30 days.</p></div>
+<script>
+const KEY = "AIzaSyA90OkQ2adNkEIdmBZAoM6vtdjV1lyg7nQ";
+const API = "https://psalmwell-api.charles-h-hartmann1.workers.dev";
+const msg = (t, ok) => { const m = document.getElementById("msg"); m.textContent = t; m.className = ok ? "ok" : "err"; };
+document.getElementById("reset").addEventListener("click", async (e) => {
+  e.preventDefault();
+  const email = document.getElementById("email").value.trim();
+  if (!email) return msg("Enter your email first.");
+  await fetch("https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=" + KEY, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ requestType: "PASSWORD_RESET", email }) });
+  msg("If that email has an account, a password reset link is on its way.", true);
+});
+document.getElementById("f").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  if (!document.getElementById("confirm").checked) return msg("Please tick the box to confirm.");
+  msg("Deleting…", true);
+  try {
+    const s = await fetch("https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=" + KEY, { method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: document.getElementById("email").value.trim(), password: document.getElementById("password").value, returnSecureToken: true }) });
+    const sj = await s.json();
+    if (!s.ok) return msg("That email and password don't match an account.");
+    const d = await fetch(API + "/v1/account", { method: "DELETE", headers: { Authorization: "Bearer " + sj.idToken } });
+    const dj = await d.json().catch(() => ({}));
+    if (!d.ok) return msg(dj.error || "Something went wrong. Please try again or email us.");
+    document.getElementById("f").reset();
+    msg("Your Psalmwell account and all of its data have been deleted.", true);
+  } catch (err) { msg("You appear to be offline. Please try again."); }
+});
+</script>
+</main>
+<footer><div class="wrap">Psalmwell: Daily Bible Verse is made by Hartmann Studios (Charles Hartmann). Scripture text is the World English Bible, which is in the public domain.<br>
+<a href="/privacy">Privacy policy</a> · <a href="/community-rules">Community rules</a> · <a href="/child-safety">Child safety standards</a> · <a href="/delete-account">Delete your account</a> · <a href="/support">Contact &amp; appeals</a></div></footer></body></html>

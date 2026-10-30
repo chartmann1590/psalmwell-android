@@ -1,0 +1,10 @@
+name = "psalmwell-api"
+main = "src/index.js"
+compatibility_date = "2026-10-01"
+workers_dev = true
+
+[vars]
+FIREBASE_PROJECT_ID = "psalmwell-e4cc7"
+ALLOWED_ORIGIN = "https://psalmwell.web.app"
+
+# Secrets (set with `wrangler secret put`): FIREBASE_CLIENT_EMAIL, FIREBASE_PRIVATE_KEY, ADMIN_TOKEN
