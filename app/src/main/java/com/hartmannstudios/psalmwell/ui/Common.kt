@@ -20,7 +20,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,6 +28,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.hartmannstudios.psalmwell.BuildConfig
+import com.hartmannstudios.psalmwell.i18n.RawText
+import com.hartmannstudios.psalmwell.i18n.Text
+import com.hartmannstudios.psalmwell.i18n.Translator
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -54,9 +56,15 @@ fun Context.emailSupport(subject: String): Boolean = try {
     startActivity(intent); true
 } catch (e: ActivityNotFoundException) { openUrl(Links.support) }
 
+/** "Verse" — Reference (WEB), in the reader's language when a translation is on the phone. */
+fun verseShareText(text: String, reference: String): String {
+    val t = Translator.instance
+    return "\u201C${t?.trNow(text) ?: text}\u201D \u2014 ${t?.trNow(reference) ?: reference} (WEB)"
+}
+
 fun Context.shareText(text: String) {
     try {
-        startActivity(Intent.createChooser(Intent(Intent.ACTION_SEND).setType("text/plain").putExtra(Intent.EXTRA_TEXT, text), "Share verse")
+        startActivity(Intent.createChooser(Intent(Intent.ACTION_SEND).setType("text/plain").putExtra(Intent.EXTRA_TEXT, text), Translator.instance?.trNow("Share verse") ?: "Share verse")
             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
     } catch (_: ActivityNotFoundException) { }
 }
@@ -95,7 +103,7 @@ fun InfoCard(icon: ImageVector, text: String, button: String? = null, onClick: (
 fun Initial(name: String) {
     Surface(shape = CircleShape, color = MaterialTheme.colorScheme.secondaryContainer, modifier = Modifier.size(36.dp)) {
         Row(horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
-            Text(name.trim().firstOrNull()?.uppercaseChar()?.toString() ?: "?", fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSecondaryContainer)
+            RawText(name.trim().firstOrNull()?.uppercaseChar()?.toString() ?: "?", fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSecondaryContainer)
         }
     }
 }

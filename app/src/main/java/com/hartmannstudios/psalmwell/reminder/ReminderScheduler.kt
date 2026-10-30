@@ -19,6 +19,7 @@ import androidx.work.WorkerParameters
 import com.hartmannstudios.psalmwell.MainActivity
 import com.hartmannstudios.psalmwell.R
 import com.hartmannstudios.psalmwell.data.ScriptureRepository
+import com.hartmannstudios.psalmwell.i18n.Translator
 import java.time.Duration
 import java.time.ZonedDateTime
 import java.util.concurrent.TimeUnit
@@ -58,6 +59,11 @@ class DailyVerseWorker(context: Context, params: WorkerParameters) : CoroutineWo
         if (!ReminderScheduler.canNotify(applicationContext)) return Result.success()
         return runCatching {
             val verse = ScriptureRepository(applicationContext).today()
+            // Shown in the reader's chosen language when its pack is on the phone; English otherwise.
+            val translator = Translator.instance
+            val title = translator?.tr("Today's verse") ?: "Today's verse"
+            val reference = translator?.tr(verse.reference) ?: verse.reference
+            val text = translator?.tr(verse.text) ?: verse.text
             val open = PendingIntent.getActivity(
                 applicationContext, 0,
                 Intent(applicationContext, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP),
@@ -65,9 +71,9 @@ class DailyVerseWorker(context: Context, params: WorkerParameters) : CoroutineWo
             )
             val notification = NotificationCompat.Builder(applicationContext, ReminderScheduler.CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_notification)
-                .setContentTitle("Today's verse · ${verse.reference}")
-                .setContentText(verse.text)
-                .setStyle(NotificationCompat.BigTextStyle().bigText(verse.text))
+                .setContentTitle("$title · $reference")
+                .setContentText(text)
+                .setStyle(NotificationCompat.BigTextStyle().bigText(text))
                 .setContentIntent(open)
                 .setAutoCancel(true)
                 .build()

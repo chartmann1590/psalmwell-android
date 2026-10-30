@@ -22,12 +22,12 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.MenuBook
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.ChatBubbleOutline
 import androidx.compose.material.icons.filled.EditNote
 import androidx.compose.material.icons.filled.Remove
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Card
@@ -40,7 +40,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -63,6 +62,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.hartmannstudios.psalmwell.i18n.RawText
+import com.hartmannstudios.psalmwell.i18n.T
+import com.hartmannstudios.psalmwell.i18n.Text
+import com.hartmannstudios.psalmwell.i18n.isTranslated
 import com.hartmannstudios.psalmwell.model.DailyVerse
 import com.hartmannstudios.psalmwell.model.PsalmVerse
 import com.hartmannstudios.psalmwell.ui.theme.Amber
@@ -94,7 +97,7 @@ fun TodayScreen(
     ) {
         item {
             Text("Psalmwell", style = MaterialTheme.typography.headlineMedium, color = MaterialTheme.colorScheme.primary)
-            Text(today, style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            RawText(today, style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
         item {
             ElevatedCard(shape = RoundedCornerShape(28.dp), colors = CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.surface)) {
@@ -104,7 +107,7 @@ fun TodayScreen(
                     Text(verse.text, fontFamily = ScriptureFont, fontSize = 24.sp, lineHeight = 34.sp, textAlign = TextAlign.Center, modifier = Modifier.testTag("verse_text"))
                     Spacer(Modifier.height(18.dp))
                     Text(verse.reference, style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.SemiBold)
-                    Text("World English Bible", style = MaterialTheme.typography.bodySmall, fontStyle = FontStyle.Italic, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(if (isTranslated()) "World English Bible · translated on your phone by Google ML Kit" else "World English Bible", textAlign = TextAlign.Center, style = MaterialTheme.typography.bodySmall, fontStyle = FontStyle.Italic, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     Spacer(Modifier.height(18.dp))
                     HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = .2f))
                     Row(Modifier.fillMaxWidth().padding(top = 10.dp), horizontalArrangement = Arrangement.SpaceEvenly) {
@@ -155,8 +158,9 @@ fun TodayScreen(
 
 @Composable
 private fun VerseAction(icon: androidx.compose.ui.graphics.vector.ImageVector, label: String, tag: String, onClick: () -> Unit) {
+    val tl = T(label)
     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.widthIn(min = 64.dp)) {
-        IconButton(onClick = onClick, modifier = Modifier.testTag(tag).semantics { contentDescription = label }) { Icon(icon, null, tint = MaterialTheme.colorScheme.primary) }
+        IconButton(onClick = onClick, modifier = Modifier.testTag(tag).semantics { contentDescription = tl }) { Icon(icon, null, tint = MaterialTheme.colorScheme.primary) }
         Text(label, style = MaterialTheme.typography.labelSmall)
     }
 }
@@ -211,10 +215,10 @@ fun PsalmReader(
     val fontSize = (19 * scale / 100f).sp
     Column(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background).testTag("screen_reader")) {
         Row(Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 6.dp), verticalAlignment = Alignment.CenterVertically) {
-            IconButton(onClick = onBack, modifier = Modifier.testTag("reader_back")) { Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back") }
+            IconButton(onClick = onBack, modifier = Modifier.testTag("reader_back")) { Icon(Icons.AutoMirrored.Filled.ArrowBack, T("Back")) }
             Text("Psalm $chapter", style = MaterialTheme.typography.titleLarge, modifier = Modifier.weight(1f))
-            IconButton(onClick = { onScale(scale - 10) }, enabled = scale > 80) { Icon(Icons.Default.Remove, "Smaller text") }
-            IconButton(onClick = { onScale(scale + 10) }, enabled = scale < 160) { Icon(Icons.Default.Add, "Larger text") }
+            IconButton(onClick = { onScale(scale - 10) }, enabled = scale > 80) { Icon(Icons.Default.Remove, T("Smaller text")) }
+            IconButton(onClick = { onScale(scale + 10) }, enabled = scale < 160) { Icon(Icons.Default.Add, T("Larger text")) }
         }
         LazyColumn(Modifier.weight(1f), state = listState, contentPadding = PaddingValues(horizontal = 20.dp, vertical = 12.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
             if (verses.isEmpty()) item { Text("This Psalm couldn't be loaded.", color = MaterialTheme.colorScheme.error) }
@@ -233,7 +237,7 @@ fun PsalmReader(
                 }
             }
             item {
-                Text("Tap a verse to save or share it. World English Bible (public domain).", style = MaterialTheme.typography.bodySmall,
+                Text(if (isTranslated()) "Tap a verse to save or share it. World English Bible (public domain), machine-translated on your phone by Google ML Kit; the English text is the original." else "Tap a verse to save or share it. World English Bible (public domain).", style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(top = 12.dp))
             }
         }

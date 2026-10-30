@@ -1,4 +1,5 @@
 import java.util.Properties
+import java.util.zip.ZipFile
 
 plugins {
     id("com.android.application")
@@ -101,6 +102,77 @@ android {
     }
 }
 
+
+// Third-party notices that Google's libraries (ML Kit, Firebase, Play services, Ads) ship inside their
+// packages, collected at build time into an app asset that Settings > About shows.
+abstract class OpenSourceNoticesTask : DefaultTask() {
+    @get:InputFiles
+    @get:PathSensitive(PathSensitivity.NAME_ONLY)
+    abstract val libraries: ConfigurableFileCollection
+
+    @get:OutputDirectory
+    abstract val outputDir: DirectoryProperty
+
+    @TaskAction
+    fun collect() {
+        val byText = linkedMapOf<String, MutableSet<String>>()
+        libraries.files.sortedBy { it.name }.forEach { lib ->
+            if (!lib.isFile || !(lib.name.endsWith(".aar") || lib.name.endsWith(".jar"))) return@forEach
+            val archive = ZipFile(lib)
+            try {
+                val index = archive.getEntry("third_party_licenses.json")
+                val body = archive.getEntry("third_party_licenses.txt")
+                if (index != null && body != null) {
+                    val bytes: ByteArray = archive.getInputStream(body).readBytes()
+                    val json: String = String(archive.getInputStream(index).readBytes(), Charsets.UTF_8)
+                    @Suppress("UNCHECKED_CAST")
+                    val entries = groovy.json.JsonSlurper().parseText(json) as Map<String, Map<String, Any>>
+                    for ((name, pos) in entries) {
+                        val start = (pos["start"] as Number).toInt()
+                        val length = (pos["length"] as Number).toInt()
+                        if (start >= 0 && start + length <= bytes.size) {
+                            val text = String(bytes, start, length, Charsets.UTF_8).trim()
+                            byText.getOrPut(text) { sortedSetOf() }.add(name)
+                        }
+                    }
+                }
+            } finally {
+                archive.close()
+            }
+        }
+        val out = outputDir.get().asFile
+        out.mkdirs()
+        val file = File(out, "open_source_notices.txt")
+        file.writeText(
+            byText.entries.sortedBy { it.value.first().lowercase() }
+                .joinToString("\n\u000C\n") { (text, names) -> names.joinToString(", ") + "\n" + text }
+        )
+    }
+}
+
+val openSourceNotices = tasks.register<OpenSourceNoticesTask>("collectOpenSourceNotices") {
+    val runtime = configurations.named("releaseRuntimeClasspath")
+    libraries.from(runtime.map { c ->
+        c.incoming.artifactView {
+            lenient(true)
+            attributes { attribute(Attribute.of("artifactType", String::class.java), "aar") }
+        }.files
+    })
+    libraries.from(runtime.map { c ->
+        c.incoming.artifactView {
+            lenient(true)
+            attributes { attribute(Attribute.of("artifactType", String::class.java), "jar") }
+        }.files
+    })
+    outputDir.set(layout.buildDirectory.dir("generated/notices"))
+}
+
+androidComponents {
+    onVariants { variant ->
+        variant.sources.assets?.addGeneratedSourceDirectory(openSourceNotices, OpenSourceNoticesTask::outputDir)
+    }
+}
+
 dependencies {
     implementation(platform("androidx.compose:compose-bom:2026.09.00"))
     androidTestImplementation(platform("androidx.compose:compose-bom:2026.09.00"))
@@ -126,6 +198,8 @@ dependencies {
     implementation("com.google.android.libraries.identity.googleid:googleid:1.2.1")
     implementation("com.google.android.gms:play-services-ads:25.5.0")
     implementation("com.google.android.ump:user-messaging-platform:4.0.0")
+    // On-device translation of the interface and scripture into the reader's language.
+    implementation("com.google.mlkit:translate:17.0.3")
 
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.11.0")

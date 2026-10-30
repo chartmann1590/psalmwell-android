@@ -38,7 +38,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -61,6 +60,8 @@ import com.hartmannstudios.psalmwell.MainViewModel
 import com.hartmannstudios.psalmwell.R
 import com.hartmannstudios.psalmwell.ads.Ads
 import com.hartmannstudios.psalmwell.ads.BannerAd
+import com.hartmannstudios.psalmwell.i18n.Text
+import com.hartmannstudios.psalmwell.i18n.Translator
 import com.hartmannstudios.psalmwell.model.BlockedUser
 import com.hartmannstudios.psalmwell.model.JournalEntry
 import com.hartmannstudios.psalmwell.model.Reflection
@@ -134,7 +135,7 @@ private fun MainShell(vm: MainViewModel) {
     val savedRefs = remember(saved) { saved.map { it.reference }.toSet() }
     val snackbar = remember { SnackbarHostState() }
 
-    LaunchedEffect(Unit) { vm.messages.collect { snackbar.showSnackbar(it.text) } }
+    LaunchedEffect(Unit) { vm.messages.collect { snackbar.showSnackbar(Translator.instance?.tr(it.text) ?: it.text) } }
 
     val notificationPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
         vm.setReminder(granted, reminder.second)
@@ -182,7 +183,7 @@ private fun MainShell(vm: MainViewModel) {
                     chapter = chapter, verses = remember(chapter) { vm.psalm(chapter) }, savedRefs = savedRefs, scale = scale,
                     onScale = vm::setReadingScale, onBack = { openPsalm = null }, onNavigate = { openPsalm = it.coerceIn(1, 150) },
                     onToggleSave = { vm.toggleSaved(it.reference, it.text) },
-                    onShare = { context.shareText("\u201C${it.text}\u201D \u2014 ${it.reference} (WEB)") },
+                    onShare = { context.shareText(verseShareText(it.text, it.reference)) },
                 )
             }
         } else when (tab) {
@@ -190,7 +191,7 @@ private fun MainShell(vm: MainViewModel) {
                 verse = vm.verse, saved = vm.verse.reference in savedRefs, psalmOfTheDay = vm.psalmOfTheDay,
                 psalmPreview = remember { vm.psalmPreview(vm.psalmOfTheDay) }, reflectionCount = reflections.size, padding = padding,
                 onSave = { vm.toggleSaved(vm.verse.reference, vm.verse.text) },
-                onShare = { context.shareText("\u201C${vm.verse.text}\u201D \u2014 ${vm.verse.reference} (WEB)") },
+                onShare = { context.shareText(verseShareText(vm.verse.text, vm.verse.reference)) },
                 onJournal = { journalNew = true },
                 onReflect = { tab = Tab.REFLECT },
                 onOpenPsalm = { openPsalm = it },
@@ -210,7 +211,7 @@ private fun MainShell(vm: MainViewModel) {
                 entries = journal, saved = saved, padding = padding,
                 onNew = { journalNew = true }, onEdit = { journalEditing = it },
                 onRemoveSaved = { vm.toggleSaved(it.reference, it.text) },
-                onShareSaved = { context.shareText("\u201C${it.text}\u201D \u2014 ${it.reference} (WEB)") },
+                onShareSaved = { context.shareText(verseShareText(it.text, it.reference)) },
             )
             Tab.SETTINGS -> SettingsScreen(
                 account = account, available = vm.communityAvailable, blocked = blocked,

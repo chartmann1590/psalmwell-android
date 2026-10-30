@@ -5,10 +5,12 @@ import com.hartmannstudios.psalmwell.data.AuthRepository
 import com.hartmannstudios.psalmwell.data.CommunityRepository
 import com.hartmannstudios.psalmwell.data.LocalStore
 import com.hartmannstudios.psalmwell.data.ScriptureRepository
+import com.hartmannstudios.psalmwell.i18n.Translator
 
 class AppContainer(context: Context) {
     val scripture = ScriptureRepository(context)
     val store = LocalStore(context)
     val auth = AuthRepository(context)
     val community = CommunityRepository(auth)
+    val translator = Translator(context)
 }

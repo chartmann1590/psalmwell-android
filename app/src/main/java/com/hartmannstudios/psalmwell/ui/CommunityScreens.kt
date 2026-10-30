@@ -42,7 +42,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
-import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -59,6 +58,9 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import com.hartmannstudios.psalmwell.i18n.RawText
+import com.hartmannstudios.psalmwell.i18n.T
+import com.hartmannstudios.psalmwell.i18n.Text
 import com.hartmannstudios.psalmwell.model.DailyVerse
 import com.hartmannstudios.psalmwell.model.Reflection
 import com.hartmannstudios.psalmwell.model.ReportReason
@@ -127,11 +129,11 @@ private fun ReflectionCard(r: Reflection, own: Boolean, signedIn: Boolean, onDel
                 Initial(r.authorName)
                 Spacer(Modifier.width(10.dp))
                 Column(Modifier.weight(1f)) {
-                    Text(r.authorName + if (own) " (you)" else "", fontWeight = FontWeight.SemiBold)
-                    Text(formatMillis(r.createdAtMillis), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    RawText(r.authorName + if (own) " (" + T("you") + ")" else "", fontWeight = FontWeight.SemiBold)
+                    if (r.createdAtMillis == null) Text("Just now", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant) else RawText(formatMillis(r.createdAtMillis), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
                 Box {
-                    IconButton(onClick = { menu = true }, modifier = Modifier.testTag("reflection_menu")) { Icon(Icons.Default.MoreVert, "More options") }
+                    IconButton(onClick = { menu = true }, modifier = Modifier.testTag("reflection_menu")) { Icon(Icons.Default.MoreVert, T("More options")) }
                     DropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
                         if (own) {
                             DropdownMenuItem(text = { Text("Delete my reflection") }, leadingIcon = { Icon(Icons.Default.DeleteOutline, null) }, onClick = { menu = false; onDelete() })
@@ -146,7 +148,7 @@ private fun ReflectionCard(r: Reflection, own: Boolean, signedIn: Boolean, onDel
                 }
             }
             Spacer(Modifier.size(10.dp))
-            Text(r.body, style = MaterialTheme.typography.bodyLarge)
+            RawText(r.body, style = MaterialTheme.typography.bodyLarge)
         }
     }
 }

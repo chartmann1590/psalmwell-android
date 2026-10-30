@@ -26,6 +26,7 @@ import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.ChildCare
 import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material.icons.filled.DeleteOutline
+import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.EditNote
 import androidx.compose.material.icons.filled.Gavel
 import androidx.compose.material.icons.filled.Info
@@ -52,7 +53,6 @@ import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Switch
-import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -70,6 +70,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.hartmannstudios.psalmwell.data.Account
+import com.hartmannstudios.psalmwell.i18n.LanguageSettingsContent
+import com.hartmannstudios.psalmwell.i18n.RawText
+import com.hartmannstudios.psalmwell.i18n.T
+import com.hartmannstudios.psalmwell.i18n.Text
 import com.hartmannstudios.psalmwell.model.BlockedUser
 import com.hartmannstudios.psalmwell.model.JournalEntry
 import com.hartmannstudios.psalmwell.model.SavedVerse
@@ -104,8 +108,8 @@ fun JournalScreen(
             items(entries, key = { it.id }) { e ->
                 Card(Modifier.fillMaxWidth().clickable { onEdit(e) }, shape = RoundedCornerShape(18.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
                     Column(Modifier.padding(16.dp)) {
-                        Text(e.reference.ifBlank { "Note" } + " · " + e.dayKey, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary)
-                        Text(e.body, maxLines = 4, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.bodyLarge)
+                        RawText(T(e.reference.ifBlank { "Note" }) + " · " + e.dayKey, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary)
+                        RawText(e.body, maxLines = 4, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.bodyLarge)
                     }
                 }
             }
@@ -117,8 +121,8 @@ fun JournalScreen(
                         Text(s.reference, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.primary)
                         Text(s.text, fontFamily = ScriptureFont, style = MaterialTheme.typography.bodyLarge)
                         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                            IconButton(onClick = { onShareSaved(s) }) { Icon(Icons.Default.Share, "Share") }
-                            IconButton(onClick = { onRemoveSaved(s) }) { Icon(Icons.Default.DeleteOutline, "Remove") }
+                            IconButton(onClick = { onShareSaved(s) }) { Icon(Icons.Default.Share, T("Share")) }
+                            IconButton(onClick = { onRemoveSaved(s) }) { Icon(Icons.Default.DeleteOutline, T("Remove")) }
                         }
                     }
                 }
@@ -176,6 +180,7 @@ fun SettingsScreen(
     var hour by remember(reminderHour) { mutableFloatStateOf(reminderHour.toFloat()) }
     var scale by remember(readingScale) { mutableFloatStateOf(readingScale.toFloat()) }
     var blockedOpen by remember { mutableStateOf(false) }
+    var noticesOpen by rememberSaveable { mutableStateOf(false) }
     LazyColumn(
         Modifier.fillMaxSize().testTag("screen_settings"),
         contentPadding = PaddingValues(start = 20.dp, end = 20.dp, top = padding.calculateTopPadding() + 20.dp, bottom = padding.calculateBottomPadding() + 24.dp),
@@ -192,8 +197,8 @@ fun SettingsScreen(
                         Icon(Icons.Default.AccountCircle, null, Modifier.size(40.dp), tint = MaterialTheme.colorScheme.primary)
                         Spacer(Modifier.width(10.dp))
                         Column(Modifier.weight(1f)) {
-                            Text(account.displayName ?: "Signed in", fontWeight = FontWeight.SemiBold)
-                            Text(account.email ?: "", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            RawText(account.displayName ?: T("Signed in"), fontWeight = FontWeight.SemiBold)
+                            RawText(account.email ?: "", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
                     }
                     Row(Modifier.padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -239,6 +244,11 @@ fun SettingsScreen(
             }
         }
         item {
+            SettingsCard("Language") {
+                LanguageSettingsContent()
+            }
+        }
+        item {
             SettingsCard("Privacy") {
                 LinkRow(Icons.Default.PrivacyTip, "Privacy policy", { onOpen(Links.privacy) })
                 if (privacyOptionsRequired) LinkRow(Icons.Default.Tune, "Ad privacy choices", onAdsPrivacy)
@@ -252,8 +262,10 @@ fun SettingsScreen(
                     Column {
                         Text("Psalmwell $versionName by Hartmann Studios")
                         Text("Scripture: World English Bible, public domain. Contains ads.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text("Translations: Google ML Kit, on your phone.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                 }
+                LinkRow(Icons.Default.Description, "Open-source licenses and notices", { noticesOpen = true }, Modifier.testTag("settings_notices"))
             }
         }
     }
@@ -266,7 +278,7 @@ fun SettingsScreen(
                 if (blocked.isEmpty()) Text("You haven't blocked anyone. To block someone, open the menu on one of their reflections.")
                 blocked.forEach { b ->
                     Row(Modifier.fillMaxWidth().padding(vertical = 4.dp), verticalAlignment = Alignment.CenterVertically) {
-                        Text(b.name, Modifier.weight(1f))
+                        RawText(b.name, Modifier.weight(1f))
                         TextButton(onClick = { onUnblock(b) }) { Text("Unblock") }
                     }
                 }
@@ -274,6 +286,7 @@ fun SettingsScreen(
         },
         confirmButton = { TextButton(onClick = { blockedOpen = false }) { Text("Done") } },
     )
+    if (noticesOpen) OpenSourceNoticesDialog(onDismiss = { noticesOpen = false })
 }
 
 @Composable
