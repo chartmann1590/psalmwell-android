@@ -71,7 +71,13 @@ class DailyVerseWorker(context: Context, params: WorkerParameters) : CoroutineWo
                 .setContentIntent(open)
                 .setAutoCancel(true)
                 .build()
-            NotificationManagerCompat.from(applicationContext).notify(2001, notification)
+            if (Build.VERSION.SDK_INT < 33 ||
+                ContextCompat.checkSelfPermission(applicationContext, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
+            ) {
+                try {
+                    NotificationManagerCompat.from(applicationContext).notify(2001, notification)
+                } catch (_: SecurityException) { }
+            }
             Result.success()
         }.getOrElse { Result.success() }
     }

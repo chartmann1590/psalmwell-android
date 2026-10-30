@@ -32,7 +32,6 @@ class CommunityRepository(private val auth: AuthRepository) {
         if (!FirebaseGate.available) return flowOf(emptyList())
         return callbackFlow {
             val registration = db.collection("days").document(dayKey).collection("reflections")
-                .whereEqualTo("status", "visible")
                 .orderBy("createdAt", Query.Direction.DESCENDING)
                 .limit(100)
                 .addSnapshotListener { value, error ->
@@ -42,6 +41,7 @@ class CommunityRepository(private val auth: AuthRepository) {
                         return@addSnapshotListener
                     }
                     trySend(value?.documents.orEmpty().mapNotNull { doc ->
+                        if (doc.getString("status") != "visible") return@mapNotNull null
                         val uid = doc.getString("authorUid") ?: return@mapNotNull null
                         val body = doc.getString("body") ?: return@mapNotNull null
                         Reflection(
