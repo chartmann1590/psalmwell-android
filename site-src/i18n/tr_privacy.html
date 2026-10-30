@@ -1,0 +1,48 @@
+<h1>Gizlilik Politikası</h1>
+<p class="muted">Psalmwell: Daily Bible Verse (Android paketi com.hartmannstudios.psalmwell). Yürürlük tarihi: 30 Ekim 2026.</p>
+<div class="card">
+<p>Bu politika, Psalmwell: Daily Bible Verse uygulamasının ("Psalmwell") neleri topladığını, bunları neden topladığını, kimlerle paylaştığını ve nasıl silebileceğinizi açıklar. Psalmwell, verilerinizden sorumlu olan Charles Hartmann'ın geliştirici adı olan <b>Hartmann Studios</b> tarafından geliştirilmektedir. İletişim: <a href="mailto:me@charleshartmann.com">me@charleshartmann.com</a>.</p>
+<p>Kısaca: günün ayetini, 150 Mezmur'un tamamını, kaydettiğiniz ayetleri ve günlüğünüzü bir hesap açmadan okuyabilirsiniz ve bunların hiçbiri telefonunuzdan dışarı çıkmaz. Hesap yalnızca Reflections bölümünde paylaşım yapmak, bildirimde bulunmak veya birini engellemek için gereklidir. Uygulama, Google AdMob tarafından sunulan bir banner reklam gösterir ve çökmeleri bulup düzeltmek için Firebase Crashlytics kullanır.</p></div>
+
+<div class="card"><h2>1. Telefonunuzda kalan veriler</h2>
+<p>Kaydettiğiniz ayetler, özel günlük kayıtlarınız, hatırlatma saatiniz, yazı boyutunuz ve topluluk kurallarını kabul ettiğinize dair kayıt yalnızca cihazınızda saklanır. Bunları asla almayız. Telefonunuzun kendi Android yedekleme özelliğini açarsanız, Android bu uygulama verilerini şifrelenmiş ve Google hesabınız tarafından kontrol edilen o yedeğe dahil edebilir. Günlük hatırlatmalar cihazınızda planlanır. Bunları hiçbir sunucu göndermez.</p></div>
+
+<div class="card"><h2>2. Topladığımız veriler</h2>
+<table><tr><th>Veri</th><th>Ne zaman</th><th>Neden</th></tr>
+<tr><td>E-posta adresi ve şifre</td><td>Hesap oluşturduğunuzda</td><td>Oturum açma, şifre sıfırlama ve hesap güvenliği. Şifreler Firebase Authentication tarafından işlenir ve bunları asla görmeyiz.</td></tr>
+<tr><td>Görünen ad ve kullanıcı kimliği</td><td>Hesap oluşturduğunuzda</td><td>Görünen adınız, düşünceleriniz yanında herkese açık şekilde gösterilir. Kimlik, hesabınızı düşüncelerinizle, engelli listenizle ve bildirimlerinizle ilişkilendirir.</td></tr>
+<tr><td>Paylaştığınız düşünceler (reflections)</td><td>Paylaşım yaptığınızda</td><td>O günün ayetinin altında tüm Psalmwell kullanıcılarına herkese açık şekilde gösterilir. Her biri yayınlanmadan önce otomatik moderasyondan geçer.</td></tr>
+<tr><td>Engelli listeniz ve topluluk kurallarını kabul ettiğiniz tarih</td><td>Birini engellediğinizde veya kuralları kabul ettiğinizde</td><td>Engellediğiniz kişilerin içeriğini gizlemek ve paylaşım yapan herkesin kuralları kabul ettiğinden emin olmak için.</td></tr>
+<tr><td>Gönderdiğiniz bildirimler</td><td>Bir düşünceyi veya kişiyi bildirdiğinizde</td><td>Moderatörler bunları inceler: nedeni, eklediğiniz ayrıntılar, bildirilen düşüncenin bir kopyası ve bildirilen kişinin kimliği.</td></tr>
+<tr><td>IP adresi, saat ve uygulama sürümü gibi temel istek verileri</td><td>Paylaşım yaptığınızda, bildirimde bulunduğunuzda veya hesabınızı sildiğinizde</td><td>Güvenlik, kötüye kullanımı önleme ve istek sınırlama amaçlı. Bu veriler yalnızca kısa süreli sunucu günlüklerinde tutulur.</td></tr>
+<tr><td>Çökme günlükleri ve tanılama bilgileri: cihaz modeli, işletim sistemi sürümü, uygulama sürümü, hata izi (stack trace) ve bir Firebase kurulum kimliği</td><td>Uygulama çöktüğünde veya bir hatayla karşılaştığında</td><td>Firebase Crashlytics aracılığıyla hataları bulup düzeltmek için.</td></tr>
+<tr><td>Reklam verileri: reklam kimliği, IP adresinizden elde edilen yaklaşık konum, cihaz bilgileri ve reklam etkileşimleri</td><td>Bir banner reklam gösterildiğinde</td><td>Reklamları sunmak, ölçmek, sınırlamak ve reklam sahtekarlığını önlemek için. Bu veriler Google AdMob tarafından toplanır (bkz. bölüm 3).</td></tr>
+</table>
+<p>Psalmwell; hassas konumunuzu, kişilerinizi, fotoğraflarınızı, dosyalarınızı, mikrofonunuzu, kameranızı veya sağlık verilerinizi toplamaz.</p>
+<p><b>Bu web sitesinde</b> (psalmwell.web.app) reklam, analiz veya takip çerezi bulunmaz. Site, güvenlik amacıyla standart istek günlüklerini (örneğin IP adresi ve saat) tutan Firebase Hosting üzerinde barındırılmaktadır.</p></div>
+
+<div class="card"><h2>3. Verileri kimlerle paylaşıyoruz</h2>
+<ul>
+<li><b>Google Firebase</b> (Authentication, Cloud Firestore ve Crashlytics), hesap, düşünce, bildirim ve çökme verilerini bizim için bir hizmet sağlayıcısı olarak saklar. Bkz. <a href="https://firebase.google.com/support/privacy">Firebase gizlilik bilgileri</a>.</li>
+<li><b>Cloudflare</b>, moderasyon API'mizi (psalmwell-api) çalıştırır; bu da düşünceleri kontrol eder, bildirimleri ve silme işlemlerini bir hizmet sağlayıcısı olarak işler.</li>
+<li><b>Google AdMob</b>, banner reklamları göstermek için yukarıda listelenen reklam verilerini alır. Yasanın gerektirdiği yerlerde, örneğin AEA, Birleşik Krallık ve İsviçre'de, Psalmwell reklamlar kişiselleştirilmeden önce Google'ın onay formu aracılığıyla rızanızı ister. Tercihinizi dilediğiniz zaman Ayarlar &gt; Reklam gizliliği tercihleri bölümünden değiştirebilirsiniz. Reklam kimliğinizi Android ayarlarınızdan da sıfırlayabilir veya silebilirsiniz. Bkz. <a href="https://policies.google.com/technologies/partner-sites">Google'ın uygulamalardan gelen verileri nasıl kullandığı</a>.</li>
+<li><b>Diğer Psalmwell kullanıcıları</b>, görünen adınızı ve paylaştığınız düşünceleri görebilir.</li>
+<li>Yasanın gerektirmesi halinde veya insanları zarardan korumak amacıyla bilgileri ifşa edebiliriz. Örneğin, çocuk istismarı materyallerini National Center for Missing &amp; Exploited Children (NCMEC) ve yetkililere bildiririz.</li></ul>
+<p>Kişisel verilerinizi satmıyoruz ve bunları kendimiz reklam profilleri oluşturmak için kullanmıyoruz.</p></div>
+
+<div class="card"><h2>4. Güvenlik</h2><p>Tüm veriler aktarım sırasında şifrelenir (HTTPS/TLS). Firebase, depolanan verileri bekleme halindeyken şifreler. Moderasyon araçlarına erişim yalnızca geliştiriciyle sınırlıdır.</p></div>
+
+<div class="card"><h2>5. Verileri ne kadar süre saklıyoruz</h2>
+<ul><li>Hesap verileri, düşünceler ve engelli listeniz, siz onları veya hesabınızı silene kadar saklanır.</li>
+<li>Moderasyon tarafından kaldırılan düşünceler, kararların incelenebilmesi ve itiraz edilebilmesi için en fazla 1 yıl saklanır. Bu sürenin ardından silinir.</li>
+<li>Bildirimler güvenlik nedeniyle en fazla 1 yıl saklanır. Bildirimde bulunan kişi hesabını sildiğinde, kimliği bildirimden kaldırılır.</li>
+<li>İstek sınırlama kayıtları birkaç gün içinde silinir. Crashlytics, çökme verilerini 90 gün boyunca saklar.</li></ul></div>
+
+<div class="card"><h2>6. Verilerinizi silme</h2>
+<p>Uygulama içinde, menüsünden tek bir düşünceyi silebilirsiniz. Hesabınızı ve tüm verilerinizi silmek için uygulamada <b>Ayarlar &gt; Hesabımı ve düşüncelerimi sil</b> seçeneğini açın veya <a href="/delete-account">psalmwell.web.app/delete-account</a> adresine gidin. Bu işlem, oturum açma hesabınızı, profilinizi, görünen adınızı, tüm düşüncelerinizi ve engelli listenizi kalıcı olarak siler. Oturum açamıyorsanız, hesabınıza kayıtlı adresten <a href="mailto:me@charleshartmann.com?subject=Psalmwell%20account%20deletion">me@charleshartmann.com</a> adresine e-posta gönderin, 30 gün içinde hesabınızı sileriz. Yalnızca telefonunuzda saklanan veriler, uygulamayı kaldırdığınızda silinir.</p></div>
+
+<div class="card"><h2>7. Çocuklar</h2><p>Psalmwell, 13 yaş ve üzeri kişiler için tasarlanmıştır ve Reflections bölümü çocuklara yönelik değildir. 13 yaşın altındaki çocuklardan bilerek kişisel veri toplamayız. 13 yaşın altında bir çocuğun hesap oluşturduğunu düşünüyorsanız, bizimle iletişime geçin, hesabı sileriz. Bkz. <a href="/child-safety">çocuk güvenliği standartlarımız</a>.</p></div>
+
+<div class="card"><h2>8. Haklarınız</h2><p>Yaşadığınız yere bağlı olarak, örneğin GDPR veya ABD eyalet gizlilik yasaları kapsamında, verilerinize erişme, onları düzeltme, dışa aktarma veya silme ve bazı işlemlere itiraz etme ya da bunları sınırlama hakkınız olabilir. <a href="mailto:me@charleshartmann.com">me@charleshartmann.com</a> adresine e-posta gönderin, 30 gün içinde yanıt veririz. Ayrıca yerel veri koruma otoritenize de şikayette bulunabilirsiniz.</p></div>
+
+<div class="card"><h2>9. Değişiklikler</h2><p>Bu politika değişirse, bu sayfayı ve yukarıdaki yürürlük tarihini güncelleriz. Değişiklik önemli olduğunda, bunu uygulama içinde de size bildiririz.</p></div>

@@ -17,7 +17,8 @@ Psalmwell is distributed only through Google Play.
 | --- | --- |
 | `app/` | Android app (Kotlin, Jetpack Compose) |
 | `worker/` | `psalmwell-api`, a Cloudflare Worker that checks and stores reflections and handles reports and account deletion |
-| `site/` | The public website: privacy policy, community rules, child safety standards, support and account deletion |
+| `site/` | The public website (psalmwell.web.app): home, privacy policy, terms of use, community rules, child safety standards, support and account deletion. Home, privacy and terms are also in 16 more languages. |
+| `site-src/` | Sources for the translated pages; `python3 scripts/build_site.py` writes them into `site/`, and `scripts/deploy_hosting.py` publishes `site/` to Firebase Hosting |
 | `firestore.rules`, `firestore.indexes.json` | Firestore security rules and indexes |
 
 ## Building
