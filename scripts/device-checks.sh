@@ -10,6 +10,9 @@ status=0
 adb shell settings put global window_animation_scale 0
 adb shell settings put global transition_animation_scale 0
 adb shell settings put global animator_duration_scale 0
+# The emulator's own launcher sometimes raises a "not responding" dialog right after boot; keep system dialogs out of the run.
+adb shell settings put global hide_error_dialogs 1 || true
+adb shell am broadcast -a android.intent.action.CLOSE_SYSTEM_DIALOGS || true
 
 # 1) Instrumented guest journey on the debug build (also writes store screenshots)
 adb install -r "$apks/debug/app-debug.apk"

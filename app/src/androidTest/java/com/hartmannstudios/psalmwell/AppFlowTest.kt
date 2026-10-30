@@ -1,13 +1,16 @@
 package com.hartmannstudios.psalmwell
 
 import android.graphics.Bitmap
+import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.captureToImage
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollToNode
 import androidx.compose.ui.test.performTextInput
@@ -30,10 +33,20 @@ class AppFlowTest {
 
     @get:Rule val rule = createAndroidComposeRule<MainActivity>()
 
+    private fun snackbarShowing() = listOf("Saved to your", "Removed from saved", "Journal entry removed").any {
+        rule.onAllNodesWithText(it, substring = true).fetchSemanticsNodes().isNotEmpty()
+    }
+
+    /** Captures only the app's own window (no system bars or system dialogs), after any snackbar is gone. */
     private fun shot(name: String) {
         rule.waitForIdle()
+        repeat(30) {
+            if (!snackbarShowing()) return@repeat
+            rule.mainClock.advanceTimeBy(1_000)
+            rule.waitForIdle()
+        }
         Thread.sleep(600)
-        val bitmap = InstrumentationRegistry.getInstrumentation().uiAutomation.takeScreenshot() ?: return
+        val bitmap = rule.onRoot().captureToImage().asAndroidBitmap()
         val dir = File(InstrumentationRegistry.getInstrumentation().targetContext.getExternalFilesDir(null), "screenshots").apply { mkdirs() }
         File(dir, "$name.png").outputStream().use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
     }
