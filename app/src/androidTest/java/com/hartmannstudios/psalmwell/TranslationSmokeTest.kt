@@ -69,8 +69,11 @@ class TranslationSmokeTest {
     @Test fun languageSettingsAndNoticesShow() {
         toToday()
         rule.onNodeWithTag("tab_settings").performClick()
+        // Scroll to the end first so the language row sits mid-screen, clear of the navigation bar.
+        rule.onNodeWithTag("screen_settings").performScrollToNode(hasTestTag("settings_notices"))
         rule.onNodeWithTag("screen_settings").performScrollToNode(hasTestTag("settings_language"))
         rule.onNodeWithTag("settings_language").performClick()
+        rule.waitUntil(5_000) { rule.onAllNodesWithTag("language_dialog").fetchSemanticsNodes().isNotEmpty() }
         rule.onNodeWithTag("language_dialog").assertIsDisplayed()
         rule.onNodeWithTag("language_search").performTextInput("Spanish")
         rule.waitUntil(5_000) { rule.onAllNodesWithTag("language_es").fetchSemanticsNodes().isNotEmpty() }

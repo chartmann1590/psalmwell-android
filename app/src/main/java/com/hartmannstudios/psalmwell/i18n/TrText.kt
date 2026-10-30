@@ -67,6 +67,7 @@ fun RawText(
     fontSize: TextUnit = TextUnit.Unspecified,
     fontWeight: FontWeight? = null,
     fontFamily: FontFamily? = null,
+    letterSpacing: TextUnit = TextUnit.Unspecified,
     textAlign: TextAlign? = null,
     lineHeight: TextUnit = TextUnit.Unspecified,
     overflow: TextOverflow = TextOverflow.Clip,
@@ -74,5 +75,5 @@ fun RawText(
     style: TextStyle = LocalTextStyle.current,
 ) = androidx.compose.material3.Text(
     text, modifier = modifier, color = color, fontSize = fontSize, fontWeight = fontWeight, fontFamily = fontFamily,
-    textAlign = textAlign, lineHeight = lineHeight, overflow = overflow, maxLines = maxLines, style = style
+    letterSpacing = letterSpacing, textAlign = textAlign, lineHeight = lineHeight, overflow = overflow, maxLines = maxLines, style = style
 )

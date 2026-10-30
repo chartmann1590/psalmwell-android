@@ -13,7 +13,7 @@ object Placeholders {
     data class Protected(val text: String, val placeholders: List<String>)
 
     /** Brand and product names that must reach the screen untranslated. */
-    val KEEP: List<String> = listOf("Psalmwell", "Hartmann Studios", "Google Play", "Google ML Kit", "ML Kit", "Google", "WEB")
+    val KEEP: List<String> = listOf("Psalmwell", "Hartmann Studios", "World English Bible", "Google Play", "Google ML Kit", "ML Kit", "Google", "WEB")
 
     private val KEEP_RE = Regex(KEEP.sortedByDescending { it.length }.joinToString("|") { "\\b" + Regex.escape(it) + "\\b" })
 

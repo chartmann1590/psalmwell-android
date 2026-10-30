@@ -62,6 +62,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.hartmannstudios.psalmwell.i18n.LocalTr
 import com.hartmannstudios.psalmwell.i18n.RawText
 import com.hartmannstudios.psalmwell.i18n.T
 import com.hartmannstudios.psalmwell.i18n.Text
@@ -73,6 +74,7 @@ import com.hartmannstudios.psalmwell.ui.theme.ScriptureFont
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
+import java.util.Locale
 
 @Composable
 fun TodayScreen(
@@ -89,7 +91,12 @@ fun TodayScreen(
     onOpenPsalm: (Int) -> Unit,
 ) {
     val top = Brush.verticalGradient(listOf(MaterialTheme.colorScheme.primaryContainer.copy(alpha = .8f), MaterialTheme.colorScheme.background))
-    val today = remember { LocalDate.now().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL)) }
+    val lang = LocalTr.current.lang
+    // The date follows the app language when one is picked, otherwise the phone's own locale.
+    val today = remember(lang) {
+        val formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL)
+        LocalDate.now().format(if (lang.isEmpty()) formatter else formatter.withLocale(Locale.forLanguageTag(lang)))
+    }
     LazyColumn(
         Modifier.fillMaxSize().background(top).testTag("screen_today"),
         contentPadding = PaddingValues(start = 20.dp, end = 20.dp, top = padding.calculateTopPadding() + 20.dp, bottom = padding.calculateBottomPadding() + 24.dp),
@@ -102,7 +109,7 @@ fun TodayScreen(
         item {
             ElevatedCard(shape = RoundedCornerShape(28.dp), colors = CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.surface)) {
                 Column(Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 28.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text("VERSE OF THE DAY", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.secondary, letterSpacing = 2.sp)
+                    RawText(T("Verse of the day").uppercase(if (lang.isEmpty()) Locale.getDefault() else Locale.forLanguageTag(lang)), style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.secondary, letterSpacing = 2.sp)
                     Spacer(Modifier.height(16.dp))
                     Text(verse.text, fontFamily = ScriptureFont, fontSize = 24.sp, lineHeight = 34.sp, textAlign = TextAlign.Center, modifier = Modifier.testTag("verse_text"))
                     Spacer(Modifier.height(18.dp))

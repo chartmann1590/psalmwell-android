@@ -53,6 +53,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.hartmannstudios.psalmwell.BuildConfig
@@ -160,7 +161,7 @@ private fun MainShell(vm: MainViewModel) {
                 NavigationBar {
                     Tab.entries.forEach { t ->
                         NavigationBarItem(
-                            selected = tab == t, onClick = { tab = t }, label = { Text(t.label) }, modifier = Modifier.testTag(t.tag),
+                            selected = tab == t, onClick = { tab = t }, label = { Text(t.label, maxLines = 1, overflow = TextOverflow.Ellipsis) }, modifier = Modifier.testTag(t.tag),
                             icon = {
                                 Icon(when (t) {
                                     Tab.TODAY -> Icons.Default.WbSunny
