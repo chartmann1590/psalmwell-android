@@ -51,6 +51,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.contentDescription
@@ -92,11 +93,10 @@ fun TodayScreen(
 ) {
     val top = Brush.verticalGradient(listOf(MaterialTheme.colorScheme.primaryContainer.copy(alpha = .8f), MaterialTheme.colorScheme.background))
     val lang = LocalTr.current.lang
-    // The date follows the app language when one is picked, otherwise the phone's own locale.
-    val today = remember(lang) {
-        val formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL)
-        LocalDate.now().format(if (lang.isEmpty()) formatter else formatter.withLocale(Locale.forLanguageTag(lang)))
-    }
+    // Dates and capitals follow the app language when one is picked, otherwise the phone's own locale.
+    val deviceLocale = LocalConfiguration.current.locales[0]
+    val appLocale = remember(lang, deviceLocale) { if (lang.isEmpty()) deviceLocale else Locale.forLanguageTag(lang) }
+    val today = remember(appLocale) { LocalDate.now().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL).withLocale(appLocale)) }
     LazyColumn(
         Modifier.fillMaxSize().background(top).testTag("screen_today"),
         contentPadding = PaddingValues(start = 20.dp, end = 20.dp, top = padding.calculateTopPadding() + 20.dp, bottom = padding.calculateBottomPadding() + 24.dp),
@@ -109,7 +109,7 @@ fun TodayScreen(
         item {
             ElevatedCard(shape = RoundedCornerShape(28.dp), colors = CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.surface)) {
                 Column(Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 28.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                    RawText(T("Verse of the day").uppercase(if (lang.isEmpty()) Locale.getDefault() else Locale.forLanguageTag(lang)), style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.secondary, letterSpacing = 2.sp)
+                    RawText(T("Verse of the day").uppercase(appLocale), style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.secondary, letterSpacing = 2.sp)
                     Spacer(Modifier.height(16.dp))
                     Text(verse.text, fontFamily = ScriptureFont, fontSize = 24.sp, lineHeight = 34.sp, textAlign = TextAlign.Center, modifier = Modifier.testTag("verse_text"))
                     Spacer(Modifier.height(18.dp))
