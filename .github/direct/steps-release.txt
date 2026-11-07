@@ -13,6 +13,8 @@ shot 03-psalm-reader
 back
 wait 2
 tap (?i)^psalms$
+wait 2
+tap (?i)^psalms$
 wait 4
 adclose
 shot 04-psalms
@@ -23,6 +25,8 @@ wait 6
 adclose
 taploop (?i)^(not now|close)$
 shot 06-reflect
+back
+wait 3
 tap (?i)^journal$
 wait 4
 adclose
