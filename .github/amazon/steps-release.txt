@@ -1,0 +1,42 @@
+launch
+wait 15
+shot 01-launch
+tap (?i)^start reading$
+wait 5
+taploop (?i)^(allow|ok|not now|later|no thanks|got it|continue)$
+adclose
+shot 02-today
+tap (?i)^read$
+wait 4
+adclose
+shot 03-psalm-reader
+back
+wait 2
+tap (?i)^psalms$
+wait 4
+adclose
+shot 04-psalms
+swipeup
+shot 05-psalms-scrolled
+tap (?i)^reflect$
+wait 6
+adclose
+taploop (?i)^(not now|close)$
+shot 06-reflect
+tap (?i)^journal$
+wait 4
+adclose
+shot 07-journal
+tap (?i)^settings$
+wait 4
+adclose
+shot 08-settings
+swipeup
+swipeup
+shot 09-settings-bottom
+swipeup
+swipeup
+shot 10-settings-end
+tap (?i)^today$
+wait 3
+shot 11-back-today
