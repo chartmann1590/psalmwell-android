@@ -35,7 +35,8 @@ data class UiMessage(val text: String, val isError: Boolean = false)
 class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val c = (application as PsalmwellApplication).container
     val communityAvailable: Boolean = FirebaseGate.available
-    val googleSignInAvailable: Boolean get() = c.auth.googleClientId != null
+    // Amazon build: no Google sign-in (Fire tablets have no Google Play services); email sign-in stays.
+    val googleSignInAvailable: Boolean get() = com.hartmannstudios.psalmwell.BuildConfig.STORE != "amazon" && c.auth.googleClientId != null
 
     val verse = c.scripture.today()
     val psalmOfTheDay = c.scripture.psalmOfTheDay()
